@@ -12,20 +12,20 @@ specified size.
 
 For example, group theory:
 
-```
+```python
 from pyfinder.expr import *
 
-# Look for groups with 3 elements.
+# Look for groups with 3 elements
 element = Sort('element', [3])
 
-# The identity element is a constant.
+# The identity element is a constant
 # (which we arbitrarily fix to be 0)
 id = Constant(0, element)
 
-# Inverse is a unary function.
+# Inverse is a unary function
 inv = Function('inv', [element], element)
 
-# Composition is a binary function.
+# Composition is a binary function
 o = Function('o', [element, element], element)
 
 a = Variable('a', element)
@@ -66,6 +66,9 @@ $ ./solver3.py theories/group.py
 models found: 1
 
 ```
+
+Here we have found there is only one group of size 3,
+and it is the group of integers (under addition) modulo 3.
 
 
 
