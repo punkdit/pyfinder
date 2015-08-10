@@ -1,26 +1,28 @@
 #!/usr/bin/env python
 
-from expr import *
+from pyfinder.expr import *
 
 #______________________________________________________________________________
-# Poset theory.
+# Monoid theory.
 
 element = Sort('element')
 
-le = Function('le', [element, element], BOOL)
+id = Constant(0, element) # arbitrarily fix this
+o = Function('o', [element, element], element)
 
 a = Variable('a', element)
 b = Variable('b', element)
 c = Variable('c', element)
 
 theory = Theory([
-    le(a, a),
-    (le(a, b) & le(b, c)).implies(le(a, c)),
-    (le(a, b) & le(b, a)).implies(a==b),
+    o(id, a) == a,
+    o(a, id) == a,
+    o(a, o(b, c)) == o(o(a, b), c),
 ])
 
+
 sorts = [element]
-funcs = [le]
+funcs = [o]
 
 
 

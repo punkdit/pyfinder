@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from expr import *
+from pyfinder.expr import *
 
 #______________________________________________________________________________
 # Lattice (as an algebraic) theory.
