@@ -46,6 +46,8 @@ class ValueSearch(object):
 
 
 class Interpretation(object):
+    debug = False
+
     def __init__(self, theory, funcs):
         self.theory = theory
         self.funcs = funcs
@@ -56,7 +58,8 @@ class Interpretation(object):
             index += len(func.domain())
             self.cellspace.extend([func.range() for _ in func.domain()])
         assert index == len(self.cellspace)
-        print self.cellspace
+        if self.debug:
+            print self.cellspace
         self.cells = [None] * len(self.cellspace)
         self.stack = []
         self.clauses = theory.clauses
@@ -67,7 +70,6 @@ class Interpretation(object):
     def __iter__(self):
         return self
 
-    debug = False
     def validate(self, cells):
         for func in self.funcs:
             func.map = func.getmap(cells)

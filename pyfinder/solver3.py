@@ -90,13 +90,15 @@ class Interpretation(object):
 
         count = 0
         for clause in clauses:
-            print "removing: (%s)" % clause
+            if self.debug:
+                print "removing: (%s)" % clause
             for refutation in clause.gen_refutations():
                 #print '\t', refutation
                 self.db.add(refutation)
                 count += 1
             self.clauses.remove(clause)
-        print "gen_small_refutations: found %d refutations" % count
+        if self.debug:
+            print "gen_small_refutations: found %d refutations" % count
 
     def pop(self):
         self.stack.pop().clear()
@@ -172,7 +174,7 @@ class Solver(object):
         
                 if verbose: 
                     print '_'*79
-                    print position
+                    #print position
                     print
                     for func in self.funcs:
                         print func.tablestr(position)
