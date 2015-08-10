@@ -5,22 +5,34 @@ This is a constraint satisfaction solver based on
 the [C implementation](http://users.cecs.anu.edu.au/~jks/finder.html) from John Slaney.
 Finder is short for "Finite Domain Enumerator".
 
-The idea is to specify a *theory* about a finite
+The idea is to specify a `Theory` about finite
 sets of things, and functions on those things.
+Each such thing will come from a `Sort` with a
+specified size.
 
 For example, group theory:
 
 ```
+from pyfinder.expr import *
+
+# Look for groups with 3 elements.
 element = Sort('element', [3])
 
-id = Constant(0, element) # arbitrarily fix this
+# The identity element is a constant.
+# (which we arbitrarily fix to be 0)
+id = Constant(0, element)
+
+# Inverse is a unary function.
 inv = Function('inv', [element], element)
+
+# Composition is a binary function.
 o = Function('o', [element, element], element)
 
 a = Variable('a', element)
 b = Variable('b', element)
 c = Variable('c', element)
 
+# Our theory is a list of equations that must be satisfied.
 theory = Theory([
     o(id, a) == a,
     o(a, id) == a,
@@ -28,7 +40,6 @@ theory = Theory([
     o(a, inv(a)) == id,
     o(a, o(b, c)) == o(o(a, b), c),
 ])
-
 
 sorts = [element]
 funcs = [inv, o]
@@ -39,9 +50,6 @@ three elements:
 
 ```
 $ ./solver3.py theories/group.py 
-
-Sort('element').size = 3
-_______________________________________________________________________________
 
  inv |
 -----+---
