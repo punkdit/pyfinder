@@ -4,7 +4,7 @@ from search import crossiter
 
 
 class Sort(object):
-    def __init__(self, name, size):
+    def __init__(self, name, size=3):
         self.name = name
         self.sizes = [size]
         self.size = size
