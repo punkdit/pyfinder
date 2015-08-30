@@ -4,16 +4,16 @@
 def crossiter(sets, verbose=False):
     sets = list(sets)
     if not sets:
-        if verbose:print "XITER --->"
+        #if verbose:print "XITER --->"
         yield ()
     elif len(sets)==1:
         for item in sets[0]:
-            if verbose:print "XITER --->"
+            #if verbose:print "XITER --->"
             yield (item,)
     else:
         for item in sets[0]:
             for rest in crossiter(sets[1:]):
-                if verbose:print "XITER --->"
+                #if verbose:print "XITER --->"
                 yield (item,) + rest
 
 

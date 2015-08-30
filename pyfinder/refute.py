@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from pyfinder.util import write
 
 
 class Node(object):
@@ -28,6 +29,7 @@ class Node(object):
 
 class Refutations(object):
     paranoid = False
+
     def __init__(self, cells):
         self.cells = cells
         size = len(cells)
@@ -49,6 +51,8 @@ class Refutations(object):
         refutation = tuple(refutation)
         if refutation in self.all:
             return
+        #print "add", refutation
+        #write("+")
         self.all.add(refutation)
         prev = None
         node = None
@@ -77,7 +81,6 @@ class Refutations(object):
                 nodes.append(node)
             node = node.up
         if not values: 
-#            return values
             # get secondary refutation
             items = {}
             for node in nodes:
@@ -90,6 +93,8 @@ class Refutations(object):
             if len(items)<8 or 1:
                 items.sort()
                 self.add(items)
+                #write("!")
+                #print len(items),
         return values
 
     def check(self):
@@ -124,7 +129,8 @@ class Refutations(object):
             else:
                 node.active = False # only need this if we just backtracked
             node = node.up
-        if self.paranoid:self.check()
+        if self.paranoid:
+            self.check()
         
     def clear(self, index):
         #print "clear", index

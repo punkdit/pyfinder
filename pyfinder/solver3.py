@@ -8,8 +8,9 @@
 
 from expr import dummy
 
-from search import crossiter, multirange, Search, MultiSearch, TreeSearch
-from refute import Refutations
+from pyfinder.search import crossiter, multirange, Search, MultiSearch, TreeSearch
+from pyfinder.refute import Refutations
+from pyfinder.util import write
 
 
 class ValueSearch(object):
@@ -97,11 +98,12 @@ class Interpretation(object):
                 self.db.add(refutation)
                 count += 1
             self.clauses.remove(clause)
-        if self.debug:
+        if self.debug or 1:
             print "gen_small_refutations: found %d refutations" % count
 
     def pop(self):
         self.stack.pop().clear()
+        #write("B")
 
     def push(self):
         cellindex = len(self.stack)
@@ -157,14 +159,14 @@ class Solver(object):
 
     def assign_sizes(self):
         for sizes in self.sizeiter:
-            print
+            #print
             # set the size of each sort
             for idx, size in enumerate(sizes):
-                sorts[idx].size = size
-                print "%s.size = %s"%(sorts[idx], size)
+                self.sorts[idx].size = size
+                #print "%s.size = %s"%(self.sorts[idx], size)
             yield None
 
-    def solve(self, verbose=True):
+    def solve(self, max_count=0, verbose=True):
         for _ in self.assign_sizes():
         
             positions = Interpretation(self.theory, self.funcs)
@@ -173,6 +175,7 @@ class Solver(object):
             for position in positions:
         
                 if verbose: 
+                    print
                     print '_'*79
                     #print position
                     print
@@ -180,30 +183,32 @@ class Solver(object):
                         print func.tablestr(position)
                         print
                 count += 1
+                if max_count and count>=max_count:
+                    break
         
             print "models found:", count
 
 
 if __name__ == "__main__":
-    import sys
-    name = sys.argv[1]
+    from pyfinder.argv import argv
+    name = argv.next()
     verbose = True
     exec open(name)
-    for arg in sys.argv[2:]:
-        if '=' in arg:
-            key, val = arg.split('=')
-            val = int(val)
-            try:
-                globals()[key].sizes = [val]
-            except AttributeError:
-                globals()[key] = val
+    for sort in sorts:
+        size = argv.get(sort.name)
+        if size:
+            sort.sizes = [size]
+
+    Interpretation.debug = argv.debug
+    max_count = argv.get("max_count", 1)
+
     solver = Solver(theory, sorts, funcs)
 
-    if 'profile' in sys.argv:
+    if argv.profile:
         import cProfile
         cProfile.run('solver.solve(verbose=verbose)')
     else:
-        solver.solve(verbose=verbose)
+        solver.solve(max_count=max_count, verbose=verbose)
     
     
 

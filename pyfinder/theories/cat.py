@@ -5,8 +5,8 @@ from pyfinder.expr import *
 #______________________________________________________________________________
 # Category theory.
 
-object = Sort('object', [2])
-arrow = Sort('arrow', [3])
+object = Sort('object', 2)
+arrow = Sort('arrow', 3)
 sorts = [object, arrow]
 
 id = Function('id', [object], arrow)

@@ -4,17 +4,16 @@ from search import crossiter
 
 
 class Sort(object):
-    def __init__(self, name, sizes=[3], size=None): # a default of 3 sounds reasonable..
+    def __init__(self, name, size):
         self.name = name
-        self.sizes = list(sizes)
-        self.size = size # set by solver
+        self.sizes = [size]
+        self.size = size
     def __repr__(self):
         return "Sort(%s)"%repr(self.name)
     __str__ = __repr__
 
 dummy = -1
-BOOL = Sort('BOOL')
-BOOL.size = 2
+BOOL = Sort('BOOL', size=2)
 false = 0
 true = 1
 
@@ -25,6 +24,9 @@ class Expr(object):
 
     def __eq__(self, other):
         return EqExpr(self, other)
+
+    def __ne__(self, other):
+        return NotExpr(EqExpr(self, other))
 
     def __and__(self, other):
         return AndExpr(self, other)
@@ -330,14 +332,19 @@ def nullopstr(name, map):
     return '\n'.join(lines)
 
 def unopstr(name, map):
-    lines = []
-    n = max(len(name)+1, 3)
-    lines.append('%s |' % name.rjust(n))
-    lines.append('-'*n+'-+---')
     keys = map.keys()
     keys.sort()
-    for key in keys:
-        lines.append('%s | %s' % (str(key[0]).rjust(n), nstr(map, key)))
+    lines = []
+    n = max(len(name)+1, 3)
+    k = 2 if len(keys)<=10 else 3
+    lines.append('%s | %s' % (
+        " "*n, ' '.join(str(key[0]).rjust(k) for key in keys)
+    ))
+    s = '-' + '-'*k
+    lines.append('-'*n+'-+-'+s*len(keys))
+    lines.append('%s | %s' % (
+        name.rjust(n), ' '.join(nstr(map, key).rjust(k) for key in keys)
+    ))
     return '\n'.join(lines)
 
 def binopstr(name, map):
@@ -348,15 +355,17 @@ def binopstr(name, map):
     rhs = set([k[1] for k in keys])
     rhs = list(rhs)
     rhs.sort()
+    k = 2 if len(rhs)<=10 else 3
     lines = []
     n = len(name) + 1
     lines.append('%s | %s' % (
-        name.rjust(n), ' '.join(str(arg).rjust(2) for arg in rhs)
+        name.rjust(n), ' '.join(str(arg).rjust(k) for arg in rhs)
     ))
-    lines.append('-'*n+'-+-'+'---'*len(rhs))
+    s = '-' + '-'*k
+    lines.append('-'*n+'-+-'+s*len(rhs))
     for l in lhs:
         lines.append('%s | %s' % (
-            str(l).rjust(n), ' '.join(nstr(map, (l,r)).rjust(2) for r in rhs)
+            str(l).rjust(n), ' '.join(nstr(map, (l,r)).rjust(k) for r in rhs)
         ))
     return '\n'.join(lines)
 
@@ -369,8 +378,8 @@ class Function(object):
         self.result = result
         self.injective = False
         self.canonical = False
-        self.map = None # set by Interpret
-        self.index = None # set by Interpret
+        self.map = None # set by Interpretation
+        self.index = None # set by Interpretation
         self.__dict__.update(attr)
 
     def __call__(self, *args):
@@ -458,31 +467,31 @@ class Function(object):
     def request(self, args, value0):
         # generate pairs (valuation, cellmap)
         # XX we should pass valuation and cellmap around and let subexprs unify... XX
-#        print self, "request", value0
+        #print self, "request", value0
         for valuation0 in crossiter(range(sort.size) for sort in self.sorts):
-#            print "%s%s"%(self, valuation0)
+            #print "%s%s"%(self, valuation0)
             # Note: we unroll the request generators using list constructor (otherwise crossiter wont work):
             pairss = [list(args[i].request(value)) for (i, value) in enumerate(valuation0)]
             for result in crossiter(pairss):
-#                print self, "unify: %s"%str(result)
+                #print self, "unify: %s"%str(result)
                 # try and unify result into single valuation, cellmap
                 valuation, cellmap = {}, {}
                 for _v, _c in result:
                     valuation = unify(valuation, _v)
                     if valuation is None:
-#                        print self, "BAD valuation", self, '\n'
+                        #print self, "BAD valuation", self, '\n'
                         break
                     cellmap = unify(cellmap, _c)
                     if cellmap is None:
-#                        print self, "BAD cellmap", self, '\n'
+                        #print self, "BAD cellmap", self, '\n'
                         break
                 if valuation is not None and cellmap is not None:
                     cellindex = self.get_cellindex(valuation0)
-#                    print self, "valuation=%s, cellmap=%s"%(valuation, cellmap)
-#                    print self, "valuation0=%s, cellindex=%d" % (valuation0, cellindex)
+                    #print self, "valuation=%s, cellmap=%s"%(valuation, cellmap)
+                    #print self, "valuation0=%s, cellindex=%d" % (valuation0, cellindex)
                     if not cellindex in cellmap or cellmap[cellindex] == value0:
                         cellmap[cellindex] = value0
-#                        print self, "--->", valuation, cellmap
+                        #print self, "--->", valuation, cellmap
                         yield valuation, cellmap
 
 
