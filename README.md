@@ -16,7 +16,7 @@ For example, group theory:
 from pyfinder.expr import *
 
 # Look for groups with 3 elements
-element = Sort('element', [3])
+element = Sort('element', 3)
 
 # The identity element is a constant
 # (which we arbitrarily fix to be 0)
