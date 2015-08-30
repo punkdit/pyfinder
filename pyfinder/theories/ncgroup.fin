@@ -1,0 +1,24 @@
+
+
+sort { element cardinality = 6 }
+
+function inv : element -> element {}
+function * : element, element -> element {}
+
+constant {
+    id : element {}
+    a : element {}
+    b : element {}
+}
+
+clause {
+    id * x = x.
+    x * id = x.
+    inv(x) * x = id.
+    x * inv(x) = id.
+    (x * y) * z = x * (y * z).
+    a * b = b * a -> 0.
+}
+
+end
+

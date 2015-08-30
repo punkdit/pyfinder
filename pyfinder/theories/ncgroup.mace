@@ -1,0 +1,7 @@
+assign(iterate_up_to, 10). %
+formulas(theory).
+E * x = x. %
+x' * x = E. %
+(x * y) * z = x * (y * z). %
+A * B != B * A. %
+end_of_list.
