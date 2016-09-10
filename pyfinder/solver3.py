@@ -86,8 +86,9 @@ class Interpretation(object):
 #            print
         return None
 
-    def gen_small_refutations(self):
-        clauses = [clause for clause in self.clauses if clause.slots < 4]
+    def gen_small_refutations(self, size=5):
+        print "clause slots:", [clause.slots for clause in self.clauses]
+        clauses = [clause for clause in self.clauses if clause.slots < size]
 
         count = 0
         for clause in clauses:
@@ -177,11 +178,13 @@ class Solver(object):
                 if verbose: 
                     print
                     print '_'*79
-                    #print position
+                    print position
                     print
                     for func in self.funcs:
                         print func.tablestr(position)
                         print
+                else:
+                    yield position
                 count += 1
                 if max_count and count>=max_count:
                     break
@@ -206,7 +209,7 @@ if __name__ == "__main__":
 
     if argv.profile:
         import cProfile
-        cProfile.run('solver.solve(verbose=verbose)')
+        cProfile.run('solver.solve(max_count=max_count, verbose=verbose)')
     else:
         solver.solve(max_count=max_count, verbose=verbose)
     
