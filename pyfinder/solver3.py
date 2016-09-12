@@ -87,7 +87,8 @@ class Interpretation(object):
         return None
 
     def gen_small_refutations(self, size=5):
-        print "clause slots:", [clause.slots for clause in self.clauses]
+        if self.debug:
+            print "clause slots:", [clause.slots for clause in self.clauses]
         clauses = [clause for clause in self.clauses if clause.slots < size]
 
         count = 0
@@ -99,7 +100,7 @@ class Interpretation(object):
                 self.db.add(refutation)
                 count += 1
             self.clauses.remove(clause)
-        if self.debug or 1:
+        if self.debug:
             print "gen_small_refutations: found %d refutations" % count
 
     def pop(self):
@@ -189,7 +190,8 @@ class Solver(object):
                 if max_count and count>=max_count:
                     break
         
-            print "models found:", count
+            if verbose:
+                print "models found:", count
 
 
 if __name__ == "__main__":
