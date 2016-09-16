@@ -169,6 +169,7 @@ class Solver(object):
             yield None
 
     def solve(self, max_count=0, verbose=True):
+
         for _ in self.assign_sizes():
         
             positions = Interpretation(self.theory, self.funcs)
@@ -211,9 +212,11 @@ if __name__ == "__main__":
 
     if argv.profile:
         import cProfile
-        cProfile.run('solver.solve(max_count=max_count, verbose=verbose)')
+        cProfile.run('list(solver.solve(max_count=max_count, verbose=verbose))')
     else:
-        solver.solve(max_count=max_count, verbose=verbose)
+
+        for _ in solver.solve(max_count=max_count, verbose=verbose):
+            pass
     
     
 
