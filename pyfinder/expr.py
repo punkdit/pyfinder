@@ -8,14 +8,14 @@ class Sort(object):
         self.name = name
         self.sizes = [size]
         self.size = size
+
     def __repr__(self):
         return "Sort(%s)"%repr(self.name)
     __str__ = __repr__
 
+
 dummy = -1
 BOOL = Sort('BOOL', size=2)
-false = 0
-true = 1
 
 
 class Expr(object):
@@ -31,7 +31,7 @@ class Expr(object):
     def __and__(self, other):
         return AndExpr(self, other)
 
-    def __neg__(self):
+    def __invert__(self):
         return NotExpr(self)
 
     def __or__(self, other):
@@ -277,6 +277,13 @@ class Constant(Expr):
         if self.const == value:
             yield {}, {}
 
+#FALSE = Constant(0, BOOL)
+#TRUE = Constant(1, BOOL)
+#
+#BOT = (FALSE==TRUE)
+#TOP = (FALSE==FALSE)
+false = 0
+true = 1
 
 class Application(Expr):
     def __init__(self, func, args):
@@ -383,6 +390,7 @@ class Function(object):
         self.__dict__.update(attr)
 
     def __call__(self, *args):
+        assert len(args)==len(self.sorts), "%s expects %d args but got %d" % (self.name, len(self.sorts), len(args))
         for idx, arg in enumerate(args):
             assert arg.sort == self.sorts[idx]
         return Application(self, args)
@@ -571,7 +579,7 @@ class Clause(object):
                 refutation.sort()
                 yield refutation
         elif len(self.antecedents) == 1 and len(self.consequents) == 1:
-            expr = (-self.antecedents[0]) | self.consequents[0]
+            expr = (~self.antecedents[0]) | self.consequents[0]
             for _, cellmap in expr.request(0):
                 refutation = cellmap.items()
                 refutation.sort()
