@@ -70,8 +70,9 @@ models found: 1
 Here we have found there is only one group of size 3,
 and it is the group of integers (under addition) modulo 3.
 
-
-
+See also [Mace4](https://www.cs.unm.edu/~mccune/mace4/)
+which is the state of the art in searching for these kinds
+of finite algebraic models.
 
 
 
