@@ -1,0 +1,36 @@
+%
+% Category theory (arrows only).
+%
+
+%assign(end_size, 4).
+
+formulas(assumptions).
+E = 0. % we use E for "undefined".
+all f (E*f = E).
+all f (f*E = E).
+all f (src(f)=E <-> f=E).
+all f (tgt(f)=E <-> f=E).
+all f all g (f!=E & g!=E -> (src(g)=tgt(f) <-> (g*f != E))).
+all f (tgt(src(f)) = src(f)).
+all f (src(tgt(f)) = tgt(f)). % these imply src(src(f))=f & tgt(tgt(f))=f.
+all f (f*src(f) = f).
+all f (tgt(f)*f = f).
+all f all g all h ((f*g)*h = f*(g*h)).
+end_of_list.
+
+
+formulas(assumptions).
+% convenience predicates ------------------
+((object(u) <-> (exists v (v!=E & tgt(v)=u)))).
+-object(E).
+(u=E) | (endo(u) <-> src(u)=tgt(u)).
+-endo(E).
+(u=E) | (iso(u) <-> (exists v ((v!=E) & object(v*u) & object(u*v)))).
+inv(E)=E.
+(u=E) | (v=E) | (u*v=E) | (v*u=E) |
+  ( (object(u*v)&object(v*u)) <-> (inv(u)=v & inv(v)=u) ).
+(u=E) | (inv(u)=E) | (object(u*inv(u)) & object(inv(u)*u)).
+(u=E) | (iso(u) <-> inv(u)!=E).
+end_of_list. % ------------------------------
+
+

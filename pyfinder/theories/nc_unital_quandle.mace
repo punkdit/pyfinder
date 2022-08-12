@@ -1,0 +1,14 @@
+
+% From Ulrik Buchholtz
+% https://golem.ph.utexas.edu/category/2015/05/the_origin_of_the_word_quandle.html#c049151
+
+formulas(theory).
+
+% Self-Distributivity
+all x all y all z (x * (y * z) = (x * y) * (x * z)).
+% There is a left and right identity element
+exists e ((all x (e * x = x)) & (all y (y * e = y))).
+% Non-commutativity
+exists a exists b (a * b != b * a).
+
+end_of_list.
