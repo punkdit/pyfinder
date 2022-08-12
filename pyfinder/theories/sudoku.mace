@@ -1,0 +1,168 @@
+
+% from https://www.cs.unm.edu/~mccune/sudoku/example.in
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Sudoku puzzles with Mace4
+%
+% Run mace4 like this to get all solutions:
+%
+%    % mace4 -m -1 -f thisfile
+%
+% To get the first solution only:
+%
+%    % mace4 -f thisfile
+%
+% Unfortunately, Mace4 counts from 0, so you'll probably have to
+% translate your puzzle.  If it is given with 1 ... 9, you can
+% simply replace 9 with 0.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+assign(domain_size, 9).      % for a 9x9 puzzle
+assign(max_seconds, 2).      % time limit
+%set(print_models_portable).  % output format
+
+formulas(sudoko_rules).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% First we have the "at most one of each" rules.
+
+% Rule 1a: At most one of each in each row.
+
+all x all y1 all y2 (f(x, y1) = f(x, y2) -> y1 = y2).
+
+% Rule 2a: At most one of each in each column.
+
+all x1 all x2 all y (f(x1, y) = f(x2, y) -> x1 = x2).
+
+% Before the "at most" rule for regions, we define "same_interval".
+
+% For 9x9 puzzles, the intervals are {0,1,2}, {3,4,5}, {6,7,8};
+% same_interval(x,y) is an equivalence relation.
+
+all x same_interval(x,x).
+all x all y (same_interval(x,y) -> same_interval(y,x)).
+all x all y all z (same_interval(x,y) & same_interval(y,z) -> same_interval(x,z)).
+
+same_interval(0,1).
+same_interval(1,2).
+
+same_interval(3,4).
+same_interval(4,5).
+
+same_interval(6,7).
+same_interval(7,8).
+
+-same_interval(0,3).
+-same_interval(3,6).
+-same_interval(0,6).
+
+% The preceding clauses completely specify the same_interval relation.
+
+% Regions
+
+% The regions are determined by the intervals; in particular,
+% same_interval(x1,x2) and same_interval(y1,y2) imply that 
+% cells f(x1,y1) and f(x2,y2) are in the same region.  We could
+% define a 4-place relation same_region(x1,y1,x2,y2), but that
+% slows down mace4; instead, we'll just use same_interval in the
+% following rule.
+
+% Rule 3a: At most one of each in each region.
+
+all x1 all y1 all x2 all y2
+  (
+     same_interval(x1,x2) &
+     same_interval(y1,y2) &
+     f(x1, y1) = f(x2, y2)
+  ->
+     x1 = x2 &
+     y1 = y2 
+  ).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% "At least" rules.  It's sufficient to use the "at most" rules above
+% because those rules imply exactly one of each in each row, column,
+% and region.
+%
+% However, additional rules saying "at least one of each" can
+% be helpful (can lead to a solution with less work).  These
+% "at least" rules are straightforward for the rows and columns.
+% But they but seem complicated for the regions, and the representations
+% we tried don't seem to help much, so "at least" rules for regions
+% are not included in this version.
+
+% Rule 1b: At least one of each in each row.
+
+all x all z exists y (f(x,y) = z).
+
+% Rule 2b: At least one of each in each column.
+
+all y all z exists x (f(x,y) = z).
+
+end_of_list.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Below is the specification for the puzzle shown here.  Note that Mace4
+% requires the numbers to be 0--8, NOT 1--9.  If your puzzle has 1--9,
+% you can simply replace 9 with 0.
+%
+%         0 1 2   3 4 5   6 7 8
+%      +------------------------+
+%    0 |  1     | 2     | 3     |
+%    1 |    2   |   3   |   4   |
+%    2 |      3 |     4 |     5 |
+%      | -------+-------+------ |
+%    3 |  6     | 4     | 5     |
+%    4 |    7   |   5   |   6   |
+%    5 |      8 |     6 |     7 |
+%      | -------+-------+------ |
+%    6 |  8     | 0     | 7     |
+%    7 |    0   |   1   |   8   |
+%    8 |      1 |     2 |     4 |
+%      +------------------------+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+formulas(sample_puzzle).
+
+f(0,0) = 1.
+f(0,3) = 2.
+f(0,6) = 3.
+
+f(1,1) = 2.
+f(1,4) = 3.
+f(1,7) = 4.
+
+f(2,2) = 3.
+f(2,5) = 4.
+f(2,8) = 5.
+
+f(3,0) = 6.
+f(3,3) = 4.
+f(3,6) = 5.
+
+f(4,1) = 7.
+f(4,4) = 5.
+f(4,7) = 6.
+
+f(5,2) = 8.
+f(5,5) = 6.
+f(5,8) = 7.
+
+f(6,0) = 8.
+f(6,3) = 0.
+f(6,6) = 7.
+
+f(7,1) = 0.
+f(7,4) = 1.
+f(7,7) = 8.
+
+f(8,2) = 1.
+f(8,5) = 2.
+f(8,8) = 4.
+
+end_of_list.

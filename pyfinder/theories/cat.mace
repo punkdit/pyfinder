@@ -2,7 +2,7 @@
 % Category theory (arrows only).
 %
 
-
+assign(max_megs, 2000).
 op(601, infix_left,        "*" ).
 
 
@@ -28,11 +28,15 @@ all f all g all h ((f*g)*h = f*(g*h)).
 (u=E) | (endo(u) <-> src(u)=tgt(u)).
 -endo(E).
 (u=E) | (iso(u) <-> (exists v ((v!=E) & object(v*u) & object(u*v)))).
+-iso(E).
 inv(E)=E.
 (u=E) | (v=E) | (u*v=E) | (v*u=E) |
   ( (object(u*v)&object(v*u)) <-> (inv(u)=v & inv(v)=u) ).
 (u=E) | (inv(u)=E) | (object(u*inv(u)) & object(inv(u)*u)).
 (u=E) | (iso(u) <-> inv(u)!=E).
+
+(object(u) & object(v)) -> (
+    isomorphic(u,v) <-> (exists f (iso(f) & src(f)=u & tgt(f)=v))).
 
 end_of_list. % ------------------------------
 

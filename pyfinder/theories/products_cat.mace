@@ -1,0 +1,46 @@
+
+formulas(assumptions).
+
+% undefined ----------------------------
+T!=E.
+prod(u,v)=E <-> (u=E | v=E). % prod'uct object
+univ(u,v)=E <-> (u=E | v=E | src(u)!=src(v)). % comparison arrow
+
+% term'inal object ----------------------------
+object(T).
+object(u) -> (exists v (src(v)=u & tgt(v)=T)).
+(object(u) & src(v)=u & tgt(v)=T & src(v1)=u & tgt(v1)=T) -> (v=v1).
+
+% prod'uct object ------------------------------
+
+(object(u) & object(v)) <->  (object(prod(u,v))).
+
+%(x!=E & y!=E & ) -> (
+%    univ(p1(u,v)
+
+(object(u) & object(v)) -> 
+(
+  src(p1(u,v))=prod(u,v) & tgt(p1(u,v))=u 
+& src(p2(u,v))=prod(u,v) & tgt(p2(u,v))=v 
+& (all w all x all y all z
+ ( (x!=E & y!=E & src(x)=src(y) & src(x)=w & tgt(x)=u & tgt(y)=v & z=univ(x,y)) -> 
+   (src(z)=w & tgt(z)=prod(u,v) & p1(u,v)*z=x & p2(u,v)*z=y))
+ )
+& (all w all x all y all z
+ ( (  x!=E & y!=E & src(x)=src(y) & src(x)=w & tgt(x)=u & tgt(y)=v 
+    & src(z)=w & tgt(z)=prod(u,v) & p1(u,v)*z=x & p2(u,v)*z=y) -> z=univ(x,y))
+ )
+).
+
+%u!=E -> prod(T,u)=u.
+%u!=E -> prod(u,T)=u.
+%prod(u,v)=prod(v,u).
+
+end_of_list.
+
+%formulas(goals).
+%isomorphic(prod(T,T), T). % waiting right..
+%object(u) -> isomorphic(prod(T,u), u). % waiting..
+%(object(u) & object(v)) -> (isomorphic( prod(u,v), prod(v,u) )).
+%end_of_list.
+
