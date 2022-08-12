@@ -1,0 +1,74 @@
+%
+% Monoidal category theory (arrows only).
+%
+
+%assign(end_size, 4).
+
+% https://www.cs.unm.edu/~mccune/prover9/manual/2009-11A/
+op(602, infix,        "@" ).
+
+
+formulas(assumptions).
+% undefined --------------
+(x@y=E) <-> (x=E | y=E).
+lunit(x)=E <-> (x=E | -object(x)).
+runit(x)=E <-> (x=E | -object(x)).
+assoc(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
+
+% the monoidal unit is an object 1 ------
+object(1). 
+
+% the monoidal product --------------
+src(x@y) = src(x)@src(y).
+tgt(x@y) = tgt(x)@tgt(y).
+(v*u!=E & x*w!=E) -> (x@v)*(w@u)=(x*w)@(v*u).
+
+% left unitor -------------------
+object(x) -> src(lunit(x)) = 1@x.
+object(x) -> tgt(lunit(x)) = x.
+object(x) -> iso(lunit(x)).
+lunit(tgt(y))*(1@y) = y*lunit(src(y)). % lunit is natural
+
+% right unitor -------------------
+object(x) -> src(runit(x)) = x@1.
+object(x) -> tgt(runit(x)) = x.
+object(x) -> iso(runit(x)).
+runit(tgt(y))*(y@1) = y*runit(src(y)). % runit is natural
+lunit(1) = runit(1).
+
+% assoc'iativity ----------------------
+object(x) & object(y) & object(z) -> src(assoc(x,y,z)) = x@(y@z).
+object(x) & object(y) & object(z) -> tgt(assoc(x,y,z)) = (x@y)@z.
+object(x) & object(y) & object(z) -> iso(assoc(x,y,z)).
+
+% natural -----------------------------
+all f (
+    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
+    ((f@y)@z)*assoc(x, y, z) = assoc(x1,y,z)*(f@(y@z))
+).
+all f (
+    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
+    ((x@f)@z)*assoc(x, y, z) = assoc(x,y1,z)*(x@(f@z))
+).
+all f (
+    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
+    ((x@y)@f)*assoc(x, y, z) = assoc(x,y,z1)*(x@(y@f))
+).
+%all f all g all h (
+%    (x=src(f) & x1=tgt(f) & y=src(g) & y1=tgt(g) & z=src(h) & z1=tgt(h)) ->
+%    ((f@g)@h)*assoc(x, y, z) = assoc(x1,y1,z1)*(f@(g@h))
+%).
+
+% pentagon ------------------------------
+object(u) & object(v) & object(w) & object(x) ->
+    assoc(u@v, w, x)*assoc(u, v, w@x) = ((assoc(u,v,w)@x)*assoc(u,v@w,x)*(u@assoc(v,w,x))).
+
+% triangle ------------------------------
+%object(u) & object(v) -> runit(u@v) * assoc(u,v,1) = u@runit(v).
+%(all u all v (object(u) & object(v) -> (lunit(u)@v) * assoc(1,u,v) = lunit(u@v))).
+object(u) & object(v) -> (runit(u)@v) * assoc(u,1,v) = u@lunit(v).
+
+end_of_list.
+
+
+

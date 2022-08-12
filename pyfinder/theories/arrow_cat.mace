@@ -1,0 +1,6 @@
+
+formulas(assumptions).
+f != E.
+src(f) != tgt(f).
+end_of_list.
+
