@@ -1,0 +1,25 @@
+%
+% distributors & nullitors (annihilators) for a bimonoidal category (=rig category)
+% See: [Comfort2020], [Laplaza1971].
+%
+
+%assign(end_size, 4).
+
+
+formulas(assumptions).
+% undefined --------------
+ldist(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
+rnull(x)=E <-> (x=E | -object(x)).
+
+% (XIX)
+(x!=E & y!=E) ->
+lunit_add(x@y)*(rnull(x)+(y@x))*ldist(x,addzero,y) = x@lunit_add(y).
+
+end_of_list.
+
+formulas(goals).
+(x!=E) -> src(x)=tgt(x).
+end_of_list.
+
+
+    

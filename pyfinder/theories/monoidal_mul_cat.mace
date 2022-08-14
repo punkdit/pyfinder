@@ -1,0 +1,74 @@
+%
+% Monoidal category theory (arrows only).
+%
+
+%assign(end_size, 4).
+
+% https://www.cs.unm.edu/~mccune/prover9/manual/2009-11A/
+op(602, infix,        "@" ).
+
+
+formulas(assumptions).
+% undefined --------------
+(x@y=E) <-> (x=E | y=E).
+lunit_mul(x)=E <-> (x=E | -object(x)).
+runit_mul(x)=E <-> (x=E | -object(x)).
+assoc_mul(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
+
+% the monoidal unit is an object 1 ------
+object(1). 
+
+% the monoidal product --------------
+src(x@y) = src(x)@src(y).
+tgt(x@y) = tgt(x)@tgt(y).
+(v*u!=E & x*w!=E) -> (x@v)*(w@u)=(x*w)@(v*u).
+
+% left unitor -------------------
+object(x) -> src(lunit_mul(x)) = 1@x.
+object(x) -> tgt(lunit_mul(x)) = x.
+object(x) -> iso(lunit_mul(x)).
+lunit_mul(tgt(y))*(1@y) = y*lunit_mul(src(y)). % lunit_mul is natural
+
+% right unitor -------------------
+object(x) -> src(runit_mul(x)) = x@1.
+object(x) -> tgt(runit_mul(x)) = x.
+object(x) -> iso(runit_mul(x)).
+runit_mul(tgt(y))*(y@1) = y*runit_mul(src(y)). % runit_mul is natural
+lunit_mul(1) = runit_mul(1).
+
+% assoc_mul'iativity ----------------------
+object(x) & object(y) & object(z) -> src(assoc_mul(x,y,z)) = x@(y@z).
+object(x) & object(y) & object(z) -> tgt(assoc_mul(x,y,z)) = (x@y)@z.
+object(x) & object(y) & object(z) -> iso(assoc_mul(x,y,z)).
+
+% natural -----------------------------
+all f (
+    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
+    ((f@y)@z)*assoc_mul(x, y, z) = assoc_mul(x1,y,z)*(f@(y@z))
+).
+all f (
+    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
+    ((x@f)@z)*assoc_mul(x, y, z) = assoc_mul(x,y1,z)*(x@(f@z))
+).
+all f (
+    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
+    ((x@y)@f)*assoc_mul(x, y, z) = assoc_mul(x,y,z1)*(x@(y@f))
+).
+%all f all g all h (
+%    (x=src(f) & x1=tgt(f) & y=src(g) & y1=tgt(g) & z=src(h) & z1=tgt(h)) ->
+%    ((f@g)@h)*assoc_mul(x, y, z) = assoc_mul(x1,y1,z1)*(f@(g@h))
+%).
+
+% pentagon ------------------------------
+object(u) & object(v) & object(w) & object(x) ->
+    assoc_mul(u@v, w, x)*assoc_mul(u, v, w@x) = ((assoc_mul(u,v,w)@x)*assoc_mul(u,v@w,x)*(u@assoc_mul(v,w,x))).
+
+% triangle ------------------------------
+%object(u) & object(v) -> runit_mul(u@v) * assoc_mul(u,v,1) = u@runit_mul(v).
+%(all u all v (object(u) & object(v) -> (lunit_mul(u)@v) * assoc_mul(1,u,v) = lunit_mul(u@v))).
+object(u) & object(v) -> (runit_mul(u)@v) * assoc_mul(u,1,v) = u@lunit_mul(v).
+
+end_of_list.
+
+
+

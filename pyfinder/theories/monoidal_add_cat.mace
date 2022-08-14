@@ -1,0 +1,99 @@
+%
+% Symmetric Monoidal category theory, with + as monoidal product.
+%
+
+%assign(end_size, 4).
+
+% https://www.cs.unm.edu/~mccune/prover9/manual/2009-11A/
+op(603, infix,        "+" ). % the monoidal operation
+
+
+formulas(assumptions).
+% undefined --------------
+(x+y=E) <-> (x=E | y=E).
+lunit_add(x)=E <-> (x=E | -object(x)).
+runit_add(x)=E <-> (x=E | -object(x)).
+assoc_add(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
+sym(x,y)=E <-> (x=E | y=E | -object(x) | -object(y)).
+
+% the monoidal unit is an object addzero ------
+exists addzero object(addzero). 
+
+% the monoidal product --------------
+src(x+y) = src(x)+src(y).
+tgt(x+y) = tgt(x)+tgt(y).
+(v*u!=E & x*w!=E) -> (x+v)*(w+u)=(x*w)+(v*u).
+
+% left unitor -------------------
+%object(x) -> src(lunit_add(x)) = addzero+x.
+%object(x) -> tgt(lunit_add(x)) = x.
+%object(x) -> iso(lunit_add(x)).
+%lunit_add(tgt(y))*(addzero+y) = y*lunit_add(src(y)). % lunit_add is natural
+
+% right unitor -------------------
+object(x) -> src(runit_add(x)) = x+addzero.
+object(x) -> tgt(runit_add(x)) = x.
+object(x) -> iso(runit_add(x)).
+runit_add(tgt(y))*(y+addzero) = y*runit_add(src(y)). % runit_add is natural
+lunit_add(addzero) = runit_add(addzero).
+
+% assoc_add'iativity ----------------------
+object(x) & object(y) & object(z) -> src(assoc_add(x,y,z)) = x+(y+z).
+object(x) & object(y) & object(z) -> tgt(assoc_add(x,y,z)) = (x+y)+z.
+object(x) & object(y) & object(z) -> iso(assoc_add(x,y,z)).
+
+% natural -----------------------------
+all f (
+    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
+    ((f+y)+z)*assoc_add(x, y, z) = assoc_add(x1,y,z)*(f+(y+z))
+).
+all f (
+    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
+    ((x+f)+z)*assoc_add(x, y, z) = assoc_add(x,y1,z)*(x+(f+z))
+).
+all f (
+    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
+    ((x+y)+f)*assoc_add(x, y, z) = assoc_add(x,y,z1)*(x+(y+f))
+).
+%all f all g all h (
+%    (x=src(f) & x1=tgt(f) & y=src(g) & y1=tgt(g) & z=src(h) & z1=tgt(h)) ->
+%    ((f+g)+h)*assoc_add(x, y, z) = assoc_add(x1,y1,z1)*(f+(g+h))
+%).
+
+% pentagon ------------------------------
+object(u) & object(v) & object(w) & object(x) ->
+    assoc_add(u+v, w, x)*assoc_add(u, v, w+x) 
+    = ((assoc_add(u,v,w)+x)*assoc_add(u,v+w,x)*(u+assoc_add(v,w,x))).
+
+% triangle ------------------------------
+%object(u) & object(v) -> runit_add(u+v) * assoc_add(u,v,addzero) = u+runit_add(v).
+%(all u all v (object(u) & object(v) -> (lunit_add(u)+v) * assoc_add(addzero,u,v) = lunit_add(u+v))).
+object(u) & object(v) -> (runit_add(u)+v) * assoc_add(u,addzero,v) = u+lunit_add(v).
+
+% sym'metry --------------------------------
+object(x) & object(y) -> (src(sym(x,y))=x+y & tgt(sym(x,y))=y+x).
+object(x) & object(y) -> iso(sym(x,y)). % redundant ?
+
+all f (
+    (x=src(f) & x1=tgt(f) & object(y)) ->
+    ( (y+f)*sym(x,y) = sym(x1,y)*(f+y) )). % natural
+all f (
+    (y=src(f) & y1=tgt(f) & object(x)) ->
+    ( (f+x)*sym(x,y) = sym(x,y1)*(x+f) )). % natural (redundant?)
+
+lunit_add(x)*sym(x,addzero) = runit_add(x).
+
+% hexagon ------------------------------------
+object(x) & object(y) & object(z) -> (
+    (y+sym(x,z))*assoc_add(y,x,z)*(sym(x,y)+z) =
+    assoc_add(y,z,x)*sym(x,y+z)*assoc_add(x,y,z)).
+
+% sym'metry
+object(x) & object(y) -> (sym(y,x)*sym(x,y) = x+y).
+
+end_of_list.
+
+%formulas(goals).
+%end_of_list.
+
+
