@@ -1,0 +1,167 @@
+%
+% distributors & nullitors (annihilators) for a bimonoidal category (=rig category)
+% See: [Comfort2020], [Laplaza1971].
+%
+
+%assign(end_size, 4).
+
+
+formulas(assumptions).
+% undefined --------------
+ldist(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
+rdist(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
+lnull(x)=E <-> (x=E | -object(x)).
+rnull(x)=E <-> (x=E | -object(x)).
+
+% distributors: src, tgt, iso
+
+object(x) & object(y) & object(z) ->
+    (src(ldist(x,y,z)) = x@(y+z) & tgt(ldist(x,y,z)) = (x@y)+(x@z)).
+object(x) & object(y) & object(z) ->
+    (src(rdist(x,y,z)) = (x+y)@z & tgt(rdist(x,y,z)) = (x@z)+(y@z)).
+object(x) & object(y) & object(z) ->
+    iso(ldist(x,y,z)).
+object(x) & object(y) & object(z) ->
+    iso(rdist(x,y,z)).
+
+% distributors: naturality
+all f (f!=E)->(
+    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
+    ( (f@y)+(f@z) )*ldist(x,y,z) = ldist(x1,y,z)*( f@(y+z) )
+).
+all f (f!=E)->(
+    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
+    ( (x@f)+(x@z) )*ldist(x,y,z) = ldist(x,y1,z)*( x@(f+z) )
+).
+all f (f!=E)->(
+    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
+    ( (x@y)+(x@f) )*ldist(x,y,z) = ldist(x,y,z1)*( x@(y+f) )
+).
+all f (f!=E)->(
+    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
+    ( (f@z)+(y@z) )*rdist(x,y,z) = rdist(x1,y,z)*( (f+y)@z )
+).
+all f (f!=E)->(
+    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
+    ( (x@z)+(f@z) )*rdist(x,y,z) = rdist(x,y1,z)*( (x+f)@z )
+).
+all f (f!=E)->(
+    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
+    ( (x@f)+(y@f) )*rdist(x,y,z) = rdist(x,y,z1)*( (x+y)@f )
+).
+
+% nullitors: src, tgt, iso
+object(x) -> (src(lnull(x))=(addzero@x) & tgt(lnull(x))=addzero).
+object(x) -> (src(rnull(x))=(x@addzero) & tgt(rnull(x))=addzero).
+object(x) -> iso(lnull(x)).
+object(x) -> iso(rnull(x)).
+
+% nullitors: naturality
+all f (f!=E)->((x=src(f) & x1=tgt(f)) -> ( lnull(x1)*(addzero@f) = lnull(x) )).
+all f (f!=E)->((x=src(f) & x1=tgt(f)) -> ( rnull(x1)*(f@addzero) = rnull(x) )).
+
+
+% -----------------------------------------------------------
+% -----------------------------------------------------------
+% -----------------------------------------------------------
+% Laplaza axioms (I) - (XXIV)
+%
+%
+
+% (I)
+sym_add(x@y,x@z)*ldist(x,y,z) = ldist(x,z,y)*(x@sym_add(y,z)).
+
+% (II) only for sym_mul
+all A all B all C ((sym_mul(A,C)+sym_mul(B,C))*rdist(A,B,C) 
+  = ldist(C,A,B)*sym_mul(A+B,C)).
+
+% (III)
+sym_add(x@z,y@z)*rdist(x,y,z) = rdist(y,x,z)*(sym_add(x,y)@z).
+
+% (IV)
+assoc_add(x@u, y@u, z@u) * ( (x@u)+rdist(y,z,u) ) * rdist(x,y+z,u) =
+    (rdist(x,y,u)+(z@u)) * rdist(x+y,z,u) * (assoc_add(x,y,z)@u).
+
+% (V)
+assoc_add(x@y,x@z,x@u) * ((x@y)+ldist(x,z,u)) * ldist(x,y,z+u) =
+    (ldist(x,y,z)+(x@u)) * ldist(x,y+z,u) * (x@assoc_add(y,z,u)).
+
+% (VI)
+(assoc_mul(x,y,z)+assoc_mul(x,y,u)) * ldist(x,y@z,y@u) * (x@ldist(y,z,u)) =
+    ldist(x@y,z,u)*assoc_mul(x,y,z+u).
+
+% (VII)
+(assoc_mul(x,z,u)@assoc_mul(y,z,u)) * rdist(x,y,z@u) =
+    rdist(x@z,y@z,u) * (rdist(x,y,z)@u) * assoc_mul(x+y,z,u).
+
+% (VIII)
+(assoc_mul(x,y,u)@assoc_mul(x,z,u))*ldist(x,y@u,z@u)*(x@rdist(y,z,u)) =
+    rdist(x@y,x@z,u)*(ldist(x,y,z)@u)*assoc_mul(x,y+z,u).
+
+% (IX)
+  (( (x@z) + sym_add(x@u,y@z) )+(y@u))
+* (inv(assoc_add(x@z, x@u, y@z)) + (y@u))
+* assoc_add((x@z)+(x@u),y@z,y@u)
+* (ldist(x,z,u)@ldist(y,z,u))
+* rdist(x,y,z+u) 
+= (inv(assoc_add(x@z,y@z,x@u))+(y@u))
+* assoc_add((x@z)+(y@z),x@u,y@u)
+* (rdist(x,y,z)@rdist(z,y,u))
+* ldist(x+y,z,u).
+
+% (X)
+lnull(addzero) = rnull(addzero).
+
+% (XI)
+lunit_add(addzero)*(lnull(x)+lnull(y))*ldist(addzero,x,y) = lnull(x+y).
+
+% (XII)
+lunit_add(addzero)*(rnull(x)+rnull(y))*rdist(x,y,addzero) = rnull(x+y).
+
+% (XIII)
+runit_mul(addzero) = lnull(1).
+
+% (XIV)
+lunit_mul(addzero) = rnull(1).
+
+% (XV) only for sym_mul
+rnull(u) = lnull(u)*sym_mul(u,addzero).
+
+% (XVI)
+lnull(y)*(lnull(x)@y)*assoc_mul(addzero,x,y) = lnull(x@y).
+
+% (XVII)
+lnull(y)*(rnull(x)@y)*assoc_mul(x,addzero,y) = (x@lnull(y))*rnull(x).
+
+% (XVIII)
+rnull(x)*(x@rnull(y)) = rnull(x@y)*assoc_mul(x,y,addzero).
+
+% ----------------------------------------------------------------------
+% --------- with either (XIX) or (XX) theory becomes contradictory -----
+% (XIX)
+lunit_add(x@y)*(rnull(x)+(y@x))*ldist(x,addzero,y) = x@lunit_add(y).
+
+% (XX)
+lunit_add(y@x)*(lnull(x)+(y@x))*rdist(addzero,y,x) = lunit_add(y)@x.
+% ----------------------------------------------------------------------
+
+% (XXI)
+runit_add(x@y)*((x@y)+rnull(x))*ldist(x,y,addzero) = x@runit_add(y).
+
+% (XXII)
+runit_add(x@y)*((x@y)+lnull(y))*rdist(x,addzero,y) = runit_add(x)@y.
+
+% (XXIII)
+(lunit_mul(x)+lunit_mul(y))*ldist(1,x,y) = lunit_mul(x+y).
+
+% (XXIV)
+(runit_mul(x)+runit_mul(y))*ldist(x,y,1) = runit_mul(x+y).
+
+end_of_list.
+
+%formulas(goals).
+%runit_add(x)*sym_add(addzero,x) = lunit_add(x).
+%end_of_list.
+
+
+    
