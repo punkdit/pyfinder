@@ -14,7 +14,7 @@ formulas(assumptions).
 lunit_add(x)=E <-> (x=E | -object(x)).
 runit_add(x)=E <-> (x=E | -object(x)).
 assoc_add(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
-sym(x,y)=E <-> (x=E | y=E | -object(x) | -object(y)).
+sym_add(x,y)=E <-> (x=E | y=E | -object(x) | -object(y)).
 
 % the monoidal unit is an object addzero ------
 exists addzero object(addzero). 
@@ -70,26 +70,26 @@ object(u) & object(v) & object(w) & object(x) ->
 %(all u all v (object(u) & object(v) -> (lunit_add(u)+v) * assoc_add(addzero,u,v) = lunit_add(u+v))).
 object(u) & object(v) -> (runit_add(u)+v) * assoc_add(u,addzero,v) = u+lunit_add(v).
 
-% sym'metry --------------------------------
-object(x) & object(y) -> (src(sym(x,y))=x+y & tgt(sym(x,y))=y+x).
-object(x) & object(y) -> iso(sym(x,y)). % redundant ?
+% sym_add'metry --------------------------------
+object(x) & object(y) -> (src(sym_add(x,y))=x+y & tgt(sym_add(x,y))=y+x).
+object(x) & object(y) -> iso(sym_add(x,y)). % redundant ?
 
 all f (
     (x=src(f) & x1=tgt(f) & object(y)) ->
-    ( (y+f)*sym(x,y) = sym(x1,y)*(f+y) )). % natural
+    ( (y+f)*sym_add(x,y) = sym_add(x1,y)*(f+y) )). % natural
 all f (
     (y=src(f) & y1=tgt(f) & object(x)) ->
-    ( (f+x)*sym(x,y) = sym(x,y1)*(x+f) )). % natural (redundant?)
+    ( (f+x)*sym_add(x,y) = sym_add(x,y1)*(x+f) )). % natural (redundant?)
 
-lunit_add(x)*sym(x,addzero) = runit_add(x).
+lunit_add(x)*sym_add(x,addzero) = runit_add(x).
 
 % hexagon ------------------------------------
 object(x) & object(y) & object(z) -> (
-    (y+sym(x,z))*assoc_add(y,x,z)*(sym(x,y)+z) =
-    assoc_add(y,z,x)*sym(x,y+z)*assoc_add(x,y,z)).
+    (y+sym_add(x,z))*assoc_add(y,x,z)*(sym_add(x,y)+z) =
+    assoc_add(y,z,x)*sym_add(x,y+z)*assoc_add(x,y,z)).
 
-% sym'metry
-object(x) & object(y) -> (sym(y,x)*sym(x,y) = x+y).
+% sym_add'metry
+object(x) & object(y) -> (sym_add(y,x)*sym_add(x,y) = x+y).
 
 end_of_list.
 

@@ -68,16 +68,16 @@ all f (f!=E)->((x=src(f) & x1=tgt(f)) -> ( rnull(x1)*(f@addzero) == rnull(x) )).
 %
 %
 
-% FAIL
 % (I)
-sym(x@y,x@z)*ldist(x,y,z) = ldist(x,z,y)*(x@sym(y,z)).
+sym_add(x@y,x@z)*ldist(x,y,z) = ldist(x,z,y)*(x@sym_add(y,z)).
 
-% (II) only for sym'metric mul
+% (II) only for sym_mul
+all A all B all C ((sym_mul(A,C)+sym_mul(B,C))*rdist(A,B,C) 
+  = ldist(C,A,B)*sym_mul(A+B,C)).
 
 % (III)
-sym(x@z,y@z)*rdist(x,y,z) = rdist(y,x,z)*(sym(x,y)@z).
+sym_add(x@z,y@z)*rdist(x,y,z) = rdist(y,x,z)*(sym_add(x,y)@z).
 
-% FAIL
 % (IV)
 assoc_add(x@u, y@u, z@u) * ( (x@u)+rdist(y,z,u) ) * rdist(x,y+z,u) =
     (rdist(x,y,u)+(z@u)) * rdist(x+y,z,u) * (assoc_add(x,y,z)@u).
@@ -98,9 +98,8 @@ assoc_add(x@y,x@z,x@u) * ((x@y)+ldist(x,z,u)) * ldist(x,y,z+u) =
 (assoc_mul(x,y,u)@assoc_mul(x,z,u))*ldist(x,y@u,z@u)*(x@rdist(y,z,u)) =
     rdist(x@y,x@z,u)*(ldist(x,y,z)@u)*assoc_mul(x,y+z,u).
 
- FAIL
 % (IX)
-  (( (x@z) + sym(x@u,y@z) )+(y@u))
+  (( (x@z) + sym_add(x@u,y@z) )+(y@u))
 * (inv(assoc_add(x@z, x@u, y@z)) + (y@u))
 * assoc_add((x@z)+(x@u),y@z,y@u)
 * (ldist(x,z,u)@ldist(y,z,u))
@@ -125,9 +124,9 @@ runit_mul(addzero) = lnull(1).
 % (XIV)
 lunit_mul(addzero) = rnull(1).
 
-% (XV) only for sym'metric mul
+% (XV) only for sym_mul
+rnull(u) = lnull(u)*sym_mul(u,addzero).
 
-% FAIL:
 % (XVI)
 lnull(y)*(lnull(x)@y)*assoc_mul(addzero,x,y) = lnull(x@y).
 
@@ -141,6 +140,7 @@ rnull(x)*(x@rnull(y)) = rnull(x@y)*assoc_mul(x,y,addzero).
 % --------- with either (XIX) or (XX) theory becomes contradictory -----
 % (XIX)
 lunit_add(x@y)*(rnull(x)+(y@x))*ldist(x,addzero,y) = x@lunit_add(y).
+
 % (XX)
 lunit_add(y@x)*(lnull(x)+(y@x))*rdist(addzero,y,x) = lunit_add(y)@x.
 % ----------------------------------------------------------------------
@@ -160,7 +160,7 @@ runit_add(x@y)*((x@y)+lnull(y))*rdist(x,addzero,y) = runit_add(x)@y.
 end_of_list.
 
 %formulas(goals).
-%runit_add(x)*sym(addzero,x) = lunit_add(x).
+%runit_add(x)*sym_add(addzero,x) = lunit_add(x).
 %end_of_list.
 
 
