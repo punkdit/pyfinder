@@ -23,20 +23,30 @@ all f (tgt(f)*f = f).
 all f all g all h ((f*g)*h = f*(g*h)).
 
 % convenience predicates ------------------
-((object(u) <-> (exists v (v!=E & tgt(v)=u)))).
+%((object(u) <-> (exists v (v!=E & tgt(v)=u)))).
+%-object(E).
+
 -object(E).
+x!=E -> (x=src(x) <-> object(x)).
+
 (u=E) | (endo(u) <-> src(u)=tgt(u)).
 -endo(E).
-(u=E) | (iso(u) <-> (exists v ((v!=E) & object(v*u) & object(u*v)))).
--iso(E).
-inv(E)=E.
-(u=E) | (v=E) | (u*v=E) | (v*u=E) |
-  ( (object(u*v)&object(v*u)) <-> (inv(u)=v & inv(v)=u) ).
-(u=E) | (inv(u)=E) | (object(u*inv(u)) & object(inv(u)*u)).
-(u=E) | (iso(u) <-> inv(u)!=E).
 
-(object(u) & object(v)) -> (
-    isomorphic(u,v) <-> (exists f (iso(f) & src(f)=u & tgt(f)=v))).
+%(u=E) | (iso(u) <-> (exists v ((v!=E) & object(v*u) & object(u*v)))).
+%-iso(E).
+%inv(E)=E.
+%(u=E) | (v=E) | (u*v=E) | (v*u=E) |
+%  ( (object(u*v)&object(v*u)) <-> (inv(u)=v & inv(v)=u) ).
+%(u=E) | (inv(u)=E) | (object(u*inv(u)) & object(inv(u)*u)).
+%(u=E) | (iso(u) <-> inv(u)!=E).
+
+u=E | v=E | ((object(u*v) & object(v*u)) <-> (inv(u)=v & inv(v)=u)).
+inv(E)=E.
+u=E | v=E | (inv(u)=E -> (-object(u*v) | -object(v*u))).
+u=E | (iso(u) <-> inv(u)!=E).
+
+%(object(u) & object(v)) -> (
+%    isomorphic(u,v) <-> (exists f (iso(f) & src(f)=u & tgt(f)=v))).
 
 end_of_list. % ------------------------------
 
