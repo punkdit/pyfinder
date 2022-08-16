@@ -25,29 +25,29 @@ object(x) & object(y) & object(z) ->
     iso(rdist(x,y,z)).
 
 % distributors: naturality
-all f (f!=E)->(
-    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
-    ( (f@y)+(f@z) )*ldist(x,y,z) = ldist(x1,y,z)*( f@(y+z) )
+(w!=E)->(
+    (x=src(w) & x1=tgt(w) & object(y) & object(z)) ->
+    ( (w@y)+(w@z) )*ldist(x,y,z) = ldist(x1,y,z)*( w@(y+z) )
 ).
-all f (f!=E)->(
-    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
-    ( (x@f)+(x@z) )*ldist(x,y,z) = ldist(x,y1,z)*( x@(f+z) )
+(w!=E)->(
+    (y=src(w) & y1=tgt(w) & object(x) & object(z)) ->
+    ( (x@w)+(x@z) )*ldist(x,y,z) = ldist(x,y1,z)*( x@(w+z) )
 ).
-all f (f!=E)->(
-    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
-    ( (x@y)+(x@f) )*ldist(x,y,z) = ldist(x,y,z1)*( x@(y+f) )
+(w!=E)->(
+    (z=src(w) & z1=tgt(w) & object(x) & object(y)) ->
+    ( (x@y)+(x@w) )*ldist(x,y,z) = ldist(x,y,z1)*( x@(y+w) )
 ).
-all f (f!=E)->(
-    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
-    ( (f@z)+(y@z) )*rdist(x,y,z) = rdist(x1,y,z)*( (f+y)@z )
+(w!=E)->(
+    (x=src(w) & x1=tgt(w) & object(y) & object(z)) ->
+    ( (w@z)+(y@z) )*rdist(x,y,z) = rdist(x1,y,z)*( (w+y)@z )
 ).
-all f (f!=E)->(
-    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
-    ( (x@z)+(f@z) )*rdist(x,y,z) = rdist(x,y1,z)*( (x+f)@z )
+(w!=E)->(
+    (y=src(w) & y1=tgt(w) & object(x) & object(z)) ->
+    ( (x@z)+(w@z) )*rdist(x,y,z) = rdist(x,y1,z)*( (x+w)@z )
 ).
-all f (f!=E)->(
-    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
-    ( (x@f)+(y@f) )*rdist(x,y,z) = rdist(x,y,z1)*( (x+y)@f )
+(w!=E)->(
+    (z=src(w) & z1=tgt(w) & object(x) & object(y)) ->
+    ( (x@w)+(y@w) )*rdist(x,y,z) = rdist(x,y,z1)*( (x+y)@w )
 ).
 
 % nullitors: src, tgt, iso
@@ -57,8 +57,8 @@ object(x) -> iso(lnull(x)).
 object(x) -> iso(rnull(x)).
 
 % nullitors: naturality
-all f (f!=E)->((x=src(f) & x1=tgt(f)) -> ( lnull(x1)*(addzero@f) = lnull(x) )).
-all f (f!=E)->((x=src(f) & x1=tgt(f)) -> ( rnull(x1)*(f@addzero) = rnull(x) )).
+(w!=E)->((x=src(w) & x1=tgt(w)) -> ( lnull(x1)*(addzero@w) = lnull(x) )).
+(w!=E)->((x=src(w) & x1=tgt(w)) -> ( rnull(x1)*(w@addzero) = rnull(x) )).
 
 
 % -----------------------------------------------------------
@@ -69,36 +69,44 @@ all f (f!=E)->((x=src(f) & x1=tgt(f)) -> ( rnull(x1)*(f@addzero) = rnull(x) )).
 %
 
 % (I)
+(object(x) & object(y) & object(z)) ->
 sym_add(x@y,x@z)*ldist(x,y,z) = ldist(x,z,y)*(x@sym_add(y,z)).
 
 % (II) only for sym_mul
-all A all B all C ((sym_mul(A,C)+sym_mul(B,C))*rdist(A,B,C) 
-  = ldist(C,A,B)*sym_mul(A+B,C)).
+(object(x) & object(y) & object(z)) ->
+(sym_mul(x,z)+sym_mul(y,z))*rdist(x,y,z) = ldist(z,x,y)*sym_mul(x+y,z).
 
 % (III)
+(object(x) & object(y) & object(z)) ->
 sym_add(x@z,y@z)*rdist(x,y,z) = rdist(y,x,z)*(sym_add(x,y)@z).
 
 % (IV)
+(object(x) & object(y) & object(z) & object(u)) ->
 assoc_add(x@u, y@u, z@u) * ( (x@u)+rdist(y,z,u) ) * rdist(x,y+z,u) =
     (rdist(x,y,u)+(z@u)) * rdist(x+y,z,u) * (assoc_add(x,y,z)@u).
 
 % (V)
+(object(x) & object(y) & object(z) & object(u)) ->
 assoc_add(x@y,x@z,x@u) * ((x@y)+ldist(x,z,u)) * ldist(x,y,z+u) =
     (ldist(x,y,z)+(x@u)) * ldist(x,y+z,u) * (x@assoc_add(y,z,u)).
 
 % (VI)
+(object(x) & object(y) & object(z) & object(u)) ->
 (assoc_mul(x,y,z)+assoc_mul(x,y,u)) * ldist(x,y@z,y@u) * (x@ldist(y,z,u)) =
     ldist(x@y,z,u)*assoc_mul(x,y,z+u).
 
 % (VII)
+(object(x) & object(y) & object(z) & object(u)) ->
 (assoc_mul(x,z,u)@assoc_mul(y,z,u)) * rdist(x,y,z@u) =
     rdist(x@z,y@z,u) * (rdist(x,y,z)@u) * assoc_mul(x+y,z,u).
 
 % (VIII)
+(object(x) & object(y) & object(z) & object(u)) ->
 (assoc_mul(x,y,u)@assoc_mul(x,z,u))*ldist(x,y@u,z@u)*(x@rdist(y,z,u)) =
     rdist(x@y,x@z,u)*(ldist(x,y,z)@u)*assoc_mul(x,y+z,u).
 
 % (IX)
+(object(x) & object(y) & object(z) & object(u)) ->
   (( (x@z) + sym_add(x@u,y@z) )+(y@u))
 * (inv(assoc_add(x@z, x@u, y@z)) + (y@u))
 * assoc_add((x@z)+(x@u),y@z,y@u)
@@ -113,9 +121,11 @@ assoc_add(x@y,x@z,x@u) * ((x@y)+ldist(x,z,u)) * ldist(x,y,z+u) =
 lnull(addzero) = rnull(addzero).
 
 % (XI)
+(object(x) & object(y)) ->
 lunit_add(addzero)*(lnull(x)+lnull(y))*ldist(addzero,x,y) = lnull(x+y).
 
 % (XII)
+(object(x) & object(y)) ->
 lunit_add(addzero)*(rnull(x)+rnull(y))*rdist(x,y,addzero) = rnull(x+y).
 
 % (XIII)
@@ -125,42 +135,55 @@ runit_mul(addzero) = lnull(1).
 lunit_mul(addzero) = rnull(1).
 
 % (XV) only for sym_mul
+object(u) ->
 rnull(u) = lnull(u)*sym_mul(u,addzero).
 
 % (XVI)
+(object(x) & object(y)) ->
 lnull(y)*(lnull(x)@y)*assoc_mul(addzero,x,y) = lnull(x@y).
 
 % (XVII)
+(object(x) & object(y)) ->
 lnull(y)*(rnull(x)@y)*assoc_mul(x,addzero,y) = (x@lnull(y))*rnull(x).
 
 % (XVIII)
+(object(x) & object(y)) ->
 rnull(x)*(x@rnull(y)) = rnull(x@y)*assoc_mul(x,y,addzero).
 
-% ----------------------------------------------------------------------
-% --------- with either (XIX) or (XX) theory becomes contradictory -----
 % (XIX)
-lunit_add(x@y)*(rnull(x)+(y@x))*ldist(x,addzero,y) = x@lunit_add(y).
+(object(x) & object(y)) ->
+unit_add(x@y)*(rnull(x)+(y@x))*ldist(x,addzero,y) = x@lunit_add(y).
 
 % (XX)
+(object(x) & object(y)) ->
 lunit_add(y@x)*(lnull(x)+(y@x))*rdist(addzero,y,x) = lunit_add(y)@x.
-% ----------------------------------------------------------------------
 
 % (XXI)
+(object(x) & object(y)) ->
 runit_add(x@y)*((x@y)+rnull(x))*ldist(x,y,addzero) = x@runit_add(y).
 
 % (XXII)
+(object(x) & object(y)) ->
 runit_add(x@y)*((x@y)+lnull(y))*rdist(x,addzero,y) = runit_add(x)@y.
 
 % (XXIII)
+(object(x) & object(y)) ->
 (lunit_mul(x)+lunit_mul(y))*ldist(1,x,y) = lunit_mul(x+y).
 
 % (XXIV)
+(object(x) & object(y)) ->
 (runit_mul(x)+runit_mul(y))*ldist(x,y,1) = runit_mul(x+y).
+
 
 end_of_list.
 
 %formulas(goals).
-%runit_add(x)*sym_add(addzero,x) = lunit_add(x).
+%
+%% (II) only for sym_mul
+%all A all B all C (
+%(A!=E & B!=E & C!=E) ->
+%    (sym_mul(A,C)+sym_mul(B,C))*rdist(A,B,C) = ldist(C,A,B)*sym_mul(A+B,C)).
+%
 %end_of_list.
 
 
