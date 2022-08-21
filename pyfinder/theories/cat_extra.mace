@@ -1,0 +1,16 @@
+
+formulas(assumptions).
+x!=E -> (ident(x) <-> (src(x)=tgt(y) -> x*y=y)).
+-ident(E).
+%end_of_list.
+%formulas(goals).
+(x=src(x) & y=src(x)) -> (x=y). % yes
+x=src(x) -> (y*x=E | y*x=y). % yes
+x!=E -> (ident(x) <-> (tgt(x)=src(y) -> y*x=y)). % yes
+(ident(x) & ident(y) & src(x)=src(y)) -> (x=y). % yes
+ident(x) -> object(x). % yes
+(x!=E & y!=E) -> ((x*y = src(y) & y*x = tgt(y) & x1*y=src(y) & y*x1=tgt(y)) -> (x=x1)). % yes. uniq inverses.
+(x!=E & inv(x)!=E) -> ( object(x*inv(x)) & object(inv(x)*x) ). % yes
+end_of_list.
+
+

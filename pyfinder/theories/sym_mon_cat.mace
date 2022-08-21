@@ -28,13 +28,13 @@ tgt(x@y) = tgt(x)@tgt(y).
 object(x) -> src(lunit_mul(x)) = 1@x.
 object(x) -> tgt(lunit_mul(x)) = x.
 object(x) -> iso(lunit_mul(x)).
-lunit_mul(tgt(y))*(1@y) = y*lunit_mul(src(y)). % lunit_mul is natural
+y!=E -> lunit_mul(tgt(y))*(1@y) = y*lunit_mul(src(y)). % lunit_mul is natural
 
 % right unitor -------------------
 object(x) -> src(runit_mul(x)) = x@1.
 object(x) -> tgt(runit_mul(x)) = x.
 object(x) -> iso(runit_mul(x)).
-runit_mul(tgt(y))*(y@1) = y*runit_mul(src(y)). % runit_mul is natural
+y!=E -> runit_mul(tgt(y))*(y@1) = y*runit_mul(src(y)). % runit_mul is natural
 lunit_mul(1) = runit_mul(1).
 
 % assoc_mul'iativity ----------------------
@@ -42,22 +42,22 @@ object(x) & object(y) & object(z) -> src(assoc_mul(x,y,z)) = x@(y@z).
 object(x) & object(y) & object(z) -> tgt(assoc_mul(x,y,z)) = (x@y)@z.
 object(x) & object(y) & object(z) -> iso(assoc_mul(x,y,z)).
 
-% natural -----------------------------
-all f (
-    (x=src(f) & x1=tgt(f) & object(y) & object(z)) ->
-    ((f@y)@z)*assoc_mul(x, y, z) = assoc_mul(x1,y,z)*(f@(y@z))
+% assoc_mul is natural -----------------------------
+u!=E -> (
+    (x=src(u) & x1=tgt(u) & object(y) & object(z)) ->
+    ((u@y)@z)*assoc_mul(x, y, z) = assoc_mul(x1,y,z)*(u@(y@z))
 ).
-all f (
-    (y=src(f) & y1=tgt(f) & object(x) & object(z)) ->
-    ((x@f)@z)*assoc_mul(x, y, z) = assoc_mul(x,y1,z)*(x@(f@z))
+u!=E -> (
+    (y=src(u) & y1=tgt(u) & object(x) & object(z)) ->
+    ((x@u)@z)*assoc_mul(x, y, z) = assoc_mul(x,y1,z)*(x@(u@z))
 ).
-all f (
-    (z=src(f) & z1=tgt(f) & object(x) & object(y)) ->
-    ((x@y)@f)*assoc_mul(x, y, z) = assoc_mul(x,y,z1)*(x@(y@f))
+u!=E -> (
+    (z=src(u) & z1=tgt(u) & object(x) & object(y)) ->
+    ((x@y)@u)*assoc_mul(x, y, z) = assoc_mul(x,y,z1)*(x@(y@u))
 ).
-%all f all g all h (
-%    (x=src(f) & x1=tgt(f) & y=src(g) & y1=tgt(g) & z=src(h) & z1=tgt(h)) ->
-%    ((f@g)@h)*assoc_mul(x, y, z) = assoc_mul(x1,y1,z1)*(f@(g@h))
+%(u!=E & v!=E & w!=E) -> (
+%    (x=src(u) & x1=tgt(u) & y=src(v) & y1=tgt(v) & z=src(w) & z1=tgt(w)) ->
+%    ((u@v)@w)*assoc_mul(x, y, z) = assoc_mul(x1,y1,z1)*(u@(v@w))
 %).
 
 % pentagon ------------------------------
@@ -70,23 +70,23 @@ object(u) & object(v) & object(w) & object(x) ->
 object(u) & object(v) -> (runit_mul(u)@v) * assoc_mul(u,1,v) = u@lunit_mul(v).
 
 
-% sym_mul'metry --------------------------------
+% sym_mul  --------------------------------
 object(x) & object(y) -> (src(sym_mul(x,y))=x@y & tgt(sym_mul(x,y))=y@x).
 object(x) & object(y) -> iso(sym_mul(x,y)). % redundant ?
 
-all f (
-    (x=src(f) & x1=tgt(f) & object(y)) ->
-    ( (y@f)*sym_mul(x,y) = sym_mul(x1,y)*(f@y) )). % natural
-all f (
-    (y=src(f) & y1=tgt(f) & object(x)) ->
-    ( (f@x)*sym_mul(x,y) = sym_mul(x,y1)*(x@f) )). % natural (redundant?)
+(u!=E) -> (
+    (x=src(u) & x1=tgt(u) & object(y)) ->
+    ( (y@u)*sym_mul(x,y) = sym_mul(x1,y)*(u@y) )). % natural
+(u!=E) -> (
+    (y=src(u) & y1=tgt(u) & object(x)) ->
+    ( (u@x)*sym_mul(x,y) = sym_mul(x,y1)*(x@u) )). % natural (redundant?)
 
-lunit_add(x)*sym_mul(x,addzero) = runit_add(x).
+object(x) -> lunit_mul(x)*sym_mul(x,1) = runit_mul(x).
 
 % hexagon ------------------------------------
 object(x) & object(y) & object(z) -> (
-    (y@sym_mul(x,z))*assoc_add(y,x,z)*(sym_mul(x,y)@z) =
-    assoc_add(y,z,x)*sym_mul(x,y@z)*assoc_add(x,y,z)).
+    (y@sym_mul(x,z))*assoc_mul(y,x,z)*(sym_mul(x,y)@z) =
+    assoc_mul(y,z,x)*sym_mul(x,y@z)*assoc_mul(x,y,z)).
 
 % sym_mul'metry
 object(x) & object(y) -> (sym_mul(y,x)*sym_mul(x,y) = x@y).
@@ -96,4 +96,7 @@ object(x) & object(y) -> (sym_mul(y,x)*sym_mul(x,y) = x@y).
 end_of_list.
 
 
+%formulas(goals).
+%object(u) & object(v) -> runit_mul(u@v) * assoc_mul(u,v,1) = u@runit_mul(v).
+%end_of_list.
 

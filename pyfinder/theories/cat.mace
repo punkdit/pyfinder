@@ -40,7 +40,7 @@ x!=E -> (x=src(x) <-> object(x)).
 %(u=E) | (inv(u)=E) | (object(u*inv(u)) & object(inv(u)*u)).
 %(u=E) | (iso(u) <-> inv(u)!=E).
 
-u=E | v=E | ((object(u*v) & object(v*u)) <-> (inv(u)=v & inv(v)=u)).
+u=E | v=E | ((object(u*v) & object(v*u)) <-> inv(u)=v).
 inv(E)=E.
 u=E | v=E | (inv(u)=E -> (-object(u*v) | -object(v*u))).
 u=E | (iso(u) <-> inv(u)!=E).
@@ -49,5 +49,19 @@ u=E | (iso(u) <-> inv(u)!=E).
 %    isomorphic(u,v) <-> (exists f (iso(f) & src(f)=u & tgt(f)=v))).
 
 end_of_list. % ------------------------------
+
+
+%formulas(assumptions).
+%x!=E -> (ident(x) <-> (src(x)=tgt(y) -> x*y=y)).
+%-ident(E).
+%
+%(x=src(x) & y=src(x)) -> (x=y). % yes
+%x=src(x) -> (y*x=E | y*x=y). % yes
+%x!=E -> (ident(x) <-> (tgt(x)=src(y) -> y*x=y)). % yes
+%(ident(x) & ident(y) & src(x)=src(y)) -> (x=y). % yes
+%ident(x) -> object(x). % yes
+%(x!=E & y!=E) -> ((x*y = src(y) & y*x = tgt(y) & x1*y=src(y) & y*x1=tgt(y)) -> (x=x1)). % yes. uniq inverses.
+%(x!=E & inv(x)!=E) -> ( object(x*inv(x)) & object(inv(x)*x) ).
+%end_of_list.
 
 
