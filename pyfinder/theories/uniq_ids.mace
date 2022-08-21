@@ -16,6 +16,5 @@ formulas(goals).
 %ident(x) -> object(x). % yes
 %(x!=E & y!=E) -> ((x*y = src(y) & y*x = tgt(y) & x1*y=src(y) & y*x1=tgt(y)) -> (x=x1)). % yes. uniq inverses.
 
-(x!=E & inv(x)!=E) -> ( object(x*inv(x)) & object(inv(x)*x) ).
 end_of_list.
 

@@ -1,4 +1,6 @@
 
+% extra clauses to help the prover
+
 formulas(assumptions).
 x!=E -> (ident(x) <-> (src(x)=tgt(y) -> x*y=y)).
 -ident(E).
@@ -11,6 +13,10 @@ x!=E -> (ident(x) <-> (tgt(x)=src(y) -> y*x=y)). % yes
 ident(x) -> object(x). % yes
 (x!=E & y!=E) -> ((x*y = src(y) & y*x = tgt(y) & x1*y=src(y) & y*x1=tgt(y)) -> (x=x1)). % yes. uniq inverses.
 (x!=E & inv(x)!=E) -> ( object(x*inv(x)) & object(inv(x)*x) ). % yes
+u=E | v=E | (inv(u)=v <-> inv(v)=u). % yes
 end_of_list.
 
+
+%formulas(goals).
+%end_of_list.
 
