@@ -1,7 +1,6 @@
 
 formulas(assumptions).
-f != E.
-src(f) != tgt(f).
-object(2) & object(3) & (1+2=3).
+exists f (f!=E & src(f) != tgt(f)).
+%object(2) & object(3) & (1+2=3).
 end_of_list.
 

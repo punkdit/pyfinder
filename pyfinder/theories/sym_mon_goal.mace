@@ -1,0 +1,5 @@
+
+formulas(goals).
+object(u) & object(v) -> runit_mul(u@v) * assoc_mul(u,v,1) = u@runit_mul(v).
+end_of_list.
+

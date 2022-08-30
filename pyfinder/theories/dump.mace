@@ -1,0 +1,283 @@
+============================== Mace4 =================================
+Mace4 (64) version 2017-11A (CIIRC), November 2017.
+Process 68046 was started by simon on bucket,
+Sun Aug 21 16:51:51 2022
+The command was "mace4 -f cat.mace mon_cat.mace monoidal_coherence.mace".
+============================== end of head ===========================
+
+============================== INPUT =================================
+
+% Reading from file cat.mace
+
+assign(max_megs,2000).
+op(601,infix_left,"*").
+
+formulas(assumptions).
+E = 0.
+(all f E * f = E).
+(all f f * E = E).
+(all f (src(f) = E <-> f = E)).
+(all f (tgt(f) = E <-> f = E)).
+(all f all g (f != E & g != E -> (src(g) = tgt(f) <-> g * f != E))).
+(all f tgt(src(f)) = src(f)).
+(all f src(tgt(f)) = tgt(f)).
+(all f f * src(f) = f).
+(all f tgt(f) * f = f).
+(all f all g all h f * g * h = f * (g * h)).
+-object(E).
+x != E -> (x = src(x) <-> object(x)).
+u = E | (endo(u) <-> src(u) = tgt(u)).
+-endo(E).
+u = E | v = E | (object(u * v) & object(v * u) <-> inv(u) = v & inv(v) = u).
+inv(E) = E.
+u = E | v = E | (inv(u) = E -> -object(u * v) | -object(v * u)).
+u = E | (iso(u) <-> inv(u) != E).
+end_of_list.
+
+% Reading from file mon_cat.mace
+
+op(602,infix,"@").
+
+formulas(assumptions).
+x @ y = E <-> x = E | y = E.
+lunit_mul(x) = E <-> x = E | -object(x).
+runit_mul(x) = E <-> x = E | -object(x).
+assoc_mul(x,y,z) = E <-> x = E | y = E | z = E | -object(x) | -object(y) | -object(z).
+object(1).
+src(x @ y) = src(x) @ src(y).
+tgt(x @ y) = tgt(x) @ tgt(y).
+v * u != E & x * w != E -> (x @ v) * (w @ u) = x * w @ v * u.
+object(x) -> src(lunit_mul(x)) = 1 @ x.
+object(x) -> tgt(lunit_mul(x)) = x.
+object(x) -> iso(lunit_mul(x)).
+y != E -> lunit_mul(tgt(y)) * (1 @ y) = y * lunit_mul(src(y)).
+object(x) -> src(runit_mul(x)) = x @ 1.
+object(x) -> tgt(runit_mul(x)) = x.
+object(x) -> iso(runit_mul(x)).
+y != E -> runit_mul(tgt(y)) * (y @ 1) = y * runit_mul(src(y)).
+lunit_mul(1) = runit_mul(1).
+object(x) & object(y) & object(z) -> src(assoc_mul(x,y,z)) = x @ (y @ z).
+object(x) & object(y) & object(z) -> tgt(assoc_mul(x,y,z)) = (x @ y) @ z.
+object(x) & object(y) & object(z) -> iso(assoc_mul(x,y,z)).
+u != E -> (x = src(u) & x1 = tgt(u) & object(y) & object(z) -> ((u @ y) @ z) * assoc_mul(x,y,z) = assoc_mul(x1,y,z) * (u @ (y @ z))).
+u != E -> (y = src(u) & y1 = tgt(u) & object(x) & object(z) -> ((x @ u) @ z) * assoc_mul(x,y,z) = assoc_mul(x,y1,z) * (x @ (u @ z))).
+u != E -> (z = src(u) & z1 = tgt(u) & object(x) & object(y) -> ((x @ y) @ u) * assoc_mul(x,y,z) = assoc_mul(x,y,z1) * (x @ (y @ u))).
+object(u) & object(v) & object(w) & object(x) -> assoc_mul(u @ v,w,x) * assoc_mul(u,v,w @ x) = (assoc_mul(u,v,w) @ x) * assoc_mul(u,v @ w,x) * (u @ assoc_mul(v,w,x)).
+object(u) & object(v) -> (runit_mul(u) @ v) * assoc_mul(u,1,v) = u @ lunit_mul(v).
+end_of_list.
+
+% Reading from file monoidal_coherence.mace
+
+
+formulas(goals).
+object(u) & object(v) -> runit_mul(u @ v) * assoc_mul(u,v,1) = u @ runit_mul(v).
+end_of_list.
+
+============================== end of input ==========================
+
+============================== PROCESS NON-CLAUSAL FORMULAS ==========
+
+% Formulas that are not ordinary clauses:
+1 (all f E * f = E) # label(non_clause).  [assumption].
+2 (all f f * E = E) # label(non_clause).  [assumption].
+3 (all f (src(f) = E <-> f = E)) # label(non_clause).  [assumption].
+4 (all f (tgt(f) = E <-> f = E)) # label(non_clause).  [assumption].
+5 (all f all g (f != E & g != E -> (src(g) = tgt(f) <-> g * f != E))) # label(non_clause).  [assumption].
+6 (all f tgt(src(f)) = src(f)) # label(non_clause).  [assumption].
+7 (all f src(tgt(f)) = tgt(f)) # label(non_clause).  [assumption].
+8 (all f f * src(f) = f) # label(non_clause).  [assumption].
+9 (all f tgt(f) * f = f) # label(non_clause).  [assumption].
+10 (all f all g all h f * g * h = f * (g * h)) # label(non_clause).  [assumption].
+11 x != E -> (x = src(x) <-> object(x)) # label(non_clause).  [assumption].
+12 u = E | (endo(u) <-> src(u) = tgt(u)) # label(non_clause).  [assumption].
+13 u = E | v = E | (object(u * v) & object(v * u) <-> inv(u) = v & inv(v) = u) # label(non_clause).  [assumption].
+14 u = E | v = E | (inv(u) = E -> -object(u * v) | -object(v * u)) # label(non_clause).  [assumption].
+15 u = E | (iso(u) <-> inv(u) != E) # label(non_clause).  [assumption].
+16 x @ y = E <-> x = E | y = E # label(non_clause).  [assumption].
+17 lunit_mul(x) = E <-> x = E | -object(x) # label(non_clause).  [assumption].
+18 runit_mul(x) = E <-> x = E | -object(x) # label(non_clause).  [assumption].
+19 assoc_mul(x,y,z) = E <-> x = E | y = E | z = E | -object(x) | -object(y) | -object(z) # label(non_clause).  [assumption].
+20 v * u != E & x * w != E -> (x @ v) * (w @ u) = x * w @ v * u # label(non_clause).  [assumption].
+21 object(x) -> src(lunit_mul(x)) = 1 @ x # label(non_clause).  [assumption].
+22 object(x) -> tgt(lunit_mul(x)) = x # label(non_clause).  [assumption].
+23 object(x) -> iso(lunit_mul(x)) # label(non_clause).  [assumption].
+24 y != E -> lunit_mul(tgt(y)) * (1 @ y) = y * lunit_mul(src(y)) # label(non_clause).  [assumption].
+25 object(x) -> src(runit_mul(x)) = x @ 1 # label(non_clause).  [assumption].
+26 object(x) -> tgt(runit_mul(x)) = x # label(non_clause).  [assumption].
+27 object(x) -> iso(runit_mul(x)) # label(non_clause).  [assumption].
+28 y != E -> runit_mul(tgt(y)) * (y @ 1) = y * runit_mul(src(y)) # label(non_clause).  [assumption].
+29 object(x) & object(y) & object(z) -> src(assoc_mul(x,y,z)) = x @ (y @ z) # label(non_clause).  [assumption].
+30 object(x) & object(y) & object(z) -> tgt(assoc_mul(x,y,z)) = (x @ y) @ z # label(non_clause).  [assumption].
+31 object(x) & object(y) & object(z) -> iso(assoc_mul(x,y,z)) # label(non_clause).  [assumption].
+32 u != E -> (x = src(u) & x1 = tgt(u) & object(y) & object(z) -> ((u @ y) @ z) * assoc_mul(x,y,z) = assoc_mul(x1,y,z) * (u @ (y @ z))) # label(non_clause).  [assumption].
+33 u != E -> (y = src(u) & y1 = tgt(u) & object(x) & object(z) -> ((x @ u) @ z) * assoc_mul(x,y,z) = assoc_mul(x,y1,z) * (x @ (u @ z))) # label(non_clause).  [assumption].
+34 u != E -> (z = src(u) & z1 = tgt(u) & object(x) & object(y) -> ((x @ y) @ u) * assoc_mul(x,y,z) = assoc_mul(x,y,z1) * (x @ (y @ u))) # label(non_clause).  [assumption].
+35 object(u) & object(v) & object(w) & object(x) -> assoc_mul(u @ v,w,x) * assoc_mul(u,v,w @ x) = (assoc_mul(u,v,w) @ x) * assoc_mul(u,v @ w,x) * (u @ assoc_mul(v,w,x)) # label(non_clause).  [assumption].
+36 object(u) & object(v) -> (runit_mul(u) @ v) * assoc_mul(u,1,v) = u @ lunit_mul(v) # label(non_clause).  [assumption].
+37 object(u) & object(v) -> runit_mul(u @ v) * assoc_mul(u,v,1) = u @ runit_mul(v) # label(non_clause) # label(goal).  [goal].
+
+============================== end of process non-clausal formulas ===
+
+============================== CLAUSES FOR SEARCH ====================
+
+formulas(mace4_clauses).
+E = 0.
+E * x = E.
+x * E = E.
+src(x) != E | x = E.
+src(x) = E | x != E.
+tgt(x) != E | x = E.
+tgt(x) = E | x != E.
+x = E | y = E | tgt(x) != src(y) | y * x != E.
+x = E | y = E | tgt(x) = src(y) | y * x = E.
+tgt(src(x)) = src(x).
+tgt(x) = src(tgt(x)).
+x * src(x) = x.
+tgt(x) * x = x.
+x * y * z = x * (y * z).
+-object(E).
+x = E | src(x) != x | object(x).
+x = E | src(x) = x | -object(x).
+x = E | -endo(x) | tgt(x) = src(x).
+x = E | endo(x) | tgt(x) != src(x).
+-endo(E).
+x = E | y = E | -object(x * y) | -object(y * x) | inv(x) = y.
+x = E | y = E | -object(x * y) | -object(y * x) | inv(y) = x.
+x = E | y = E | object(x * y) | inv(x) != y | inv(y) != x.
+x = E | y = E | object(y * x) | inv(x) != y | inv(y) != x.
+inv(E) = E.
+x = E | y = E | inv(x) != E | -object(x * y) | -object(y * x).
+x = E | -iso(x) | inv(x) != E.
+x = E | iso(x) | inv(x) = E.
+x @ y != E | x = E | y = E.
+x @ y = E | x != E.
+x @ y = E | y != E.
+lunit_mul(x) != E | x = E | -object(x).
+lunit_mul(x) = E | x != E.
+lunit_mul(x) = E | object(x).
+runit_mul(x) != E | x = E | -object(x).
+runit_mul(x) = E | x != E.
+runit_mul(x) = E | object(x).
+assoc_mul(x,y,z) != E | x = E | y = E | z = E | -object(x) | -object(y) | -object(z).
+assoc_mul(x,y,z) = E | x != E.
+assoc_mul(x,y,z) = E | y != E.
+assoc_mul(x,y,z) = E | z != E.
+assoc_mul(x,y,z) = E | object(x).
+assoc_mul(x,y,z) = E | object(y).
+assoc_mul(x,y,z) = E | object(z).
+object(1).
+src(x @ y) = src(x) @ src(y).
+tgt(x @ y) = tgt(x) @ tgt(y).
+x * y = E | z * u = E | z * u @ x * y = (z @ x) * (u @ y).
+-object(x) | src(lunit_mul(x)) = 1 @ x.
+-object(x) | tgt(lunit_mul(x)) = x.
+-object(x) | iso(lunit_mul(x)).
+x = E | lunit_mul(tgt(x)) * (1 @ x) = x * lunit_mul(src(x)).
+-object(x) | src(runit_mul(x)) = x @ 1.
+-object(x) | tgt(runit_mul(x)) = x.
+-object(x) | iso(runit_mul(x)).
+x = E | runit_mul(tgt(x)) * (x @ 1) = x * runit_mul(src(x)).
+lunit_mul(1) = runit_mul(1).
+-object(x) | -object(y) | -object(z) | src(assoc_mul(x,y,z)) = x @ (y @ z).
+-object(x) | -object(y) | -object(z) | tgt(assoc_mul(x,y,z)) = (x @ y) @ z.
+-object(x) | -object(y) | -object(z) | iso(assoc_mul(x,y,z)).
+x = E | src(x) != y | tgt(x) != z | -object(u) | -object(w) | assoc_mul(z,u,w) * (x @ (u @ w)) = ((x @ u) @ w) * assoc_mul(y,u,w).
+x = E | src(x) != y | tgt(x) != z | -object(u) | -object(w) | assoc_mul(u,z,w) * (u @ (x @ w)) = ((u @ x) @ w) * assoc_mul(u,y,w).
+x = E | src(x) != y | tgt(x) != z | -object(u) | -object(w) | assoc_mul(u,w,z) * (u @ (w @ x)) = ((u @ w) @ x) * assoc_mul(u,w,y).
+-object(x) | -object(y) | -object(z) | -object(u) | assoc_mul(x @ y,z,u) * assoc_mul(x,y,z @ u) = (assoc_mul(x,y,z) @ u) * assoc_mul(x,y @ z,u) * (x @ assoc_mul(y,z,u)).
+-object(x) | -object(y) | x @ lunit_mul(y) = (runit_mul(x) @ y) * assoc_mul(x,1,y).
+object(c1).
+object(c2).
+c1 @ runit_mul(c2) != runit_mul(c1 @ c2) * assoc_mul(c1,c2,1).
+end_of_list.
+
+============================== end of clauses for search =============
+
+% The largest natural number in the input is 1.
+
+============================== DOMAIN SIZE 2 =========================
+
+NOTE: unsatisfiability detected on input.
+
+============================== STATISTICS ============================
+
+For domain size 2.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.01 seconds).
+Ground clauses: seen=337, kept=34.
+Selections=0, assignments=0, propagations=34, current_models=0.
+Rewrite_terms=29, rewrite_bools=34, indexes=0.
+Rules_from_neg_clauses=9, cross_offs=9.
+
+============================== end of statistics =====================
+
+============================== DOMAIN SIZE 3 =========================
+
+============================== MODEL =================================
+
+interpretation( 3, [number=1, seconds=0], [
+
+        function(E, [ 0 ]),
+
+        function(c1, [ 1 ]),
+
+        function(c2, [ 1 ]),
+
+        function(inv(_), [ 0, 1, 1 ]),
+
+        function(lunit_mul(_), [ 0, 2, 0 ]),
+
+        function(runit_mul(_), [ 0, 2, 0 ]),
+
+        function(src(_), [ 0, 1, 1 ]),
+
+        function(tgt(_), [ 0, 1, 1 ]),
+
+        function(*(_,_), [
+			   0, 0, 0,
+			   0, 1, 2,
+			   0, 2, 2 ]),
+
+        function(@(_,_), [
+			   0, 0, 0,
+			   0, 1, 1,
+			   0, 1, 1 ]),
+
+        function(assoc_mul(_,_,_), [
+			   0, 0, 0,
+			   0, 0, 0,
+			   0, 0, 0,
+			   0, 0, 0,
+			   0, 1, 0,
+			   0, 0, 0,
+			   0, 0, 0,
+			   0, 0, 0,
+			   0, 0, 0 ]),
+
+        relation(endo(_), [ 0, 1, 1 ]),
+
+        relation(iso(_), [ 0, 1, 1 ]),
+
+        relation(object(_), [ 0, 1, 0 ])
+]).
+
+============================== end of model ==========================
+
+============================== STATISTICS ============================
+
+For domain size 3.
+
+Current CPU time: 0.00 seconds (total CPU time: 0.01 seconds).
+Ground clauses: seen=1404, kept=302.
+Selections=6, assignments=12, propagations=78, current_models=1.
+Rewrite_terms=1689, rewrite_bools=479, indexes=139.
+Rules_from_neg_clauses=4, cross_offs=21.
+
+============================== end of statistics =====================
+
+User_CPU=0.01, System_CPU=0.00, Wall_clock=0.
+
+Exiting with 1 model.
+
+Process 68046 exit (max_models) Sun Aug 21 16:51:51 2022
+The process finished Sun Aug 21 16:51:51 2022

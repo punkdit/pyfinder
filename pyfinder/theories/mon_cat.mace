@@ -1,5 +1,6 @@
 %
 % Monoidal category theory (arrows only).
+% copied from sym_mon_cat.mace
 %
 
 %assign(end_size, 4).
@@ -14,7 +15,6 @@ formulas(assumptions).
 lunit_mul(x)=E <-> (x=E | -object(x)).
 runit_mul(x)=E <-> (x=E | -object(x)).
 assoc_mul(x,y,z)=E <-> (x=E | y=E | z=E | -object(x) | -object(y) | -object(z)).
-sym_mul(x,y)=E <-> (x=E | y=E | -object(x) | -object(y)).
 
 % the monoidal unit is an object 1 ------
 object(1). 
@@ -69,34 +69,10 @@ object(u) & object(v) & object(w) & object(x) ->
 %(all u all v (object(u) & object(v) -> (lunit_mul(u)@v) * assoc_mul(1,u,v) = lunit_mul(u@v))).
 object(u) & object(v) -> (runit_mul(u)@v) * assoc_mul(u,1,v) = u@lunit_mul(v).
 
-
-% sym_mul  --------------------------------
-object(x) & object(y) -> (src(sym_mul(x,y))=x@y & tgt(sym_mul(x,y))=y@x).
-object(x) & object(y) -> iso(sym_mul(x,y)). % redundant ?
-
-(u!=E) -> (
-    (x=src(u) & x1=tgt(u) & object(y)) ->
-    ( (y@u)*sym_mul(x,y) = sym_mul(x1,y)*(u@y) )). % natural
-(u!=E) -> (
-    (y=src(u) & y1=tgt(u) & object(x)) ->
-    ( (u@x)*sym_mul(x,y) = sym_mul(x,y1)*(x@u) )). % natural (redundant?)
-
-object(x) -> lunit_mul(x)*sym_mul(x,1) = runit_mul(x).
-
-% hexagon ------------------------------------
-object(x) & object(y) & object(z) -> (
-    (y@sym_mul(x,z))*assoc_mul(y,x,z)*(sym_mul(x,y)@z) =
-    assoc_mul(y,z,x)*sym_mul(x,y@z)*assoc_mul(x,y,z)).
-
-% sym_mul'metry
-object(x) & object(y) -> (sym_mul(y,x)*sym_mul(x,y) = x@y).
-
-
-
 end_of_list.
 
 
-formulas(goals).
-object(u) & object(v) -> runit_mul(u@v) * assoc_mul(u,v,1) = u@runit_mul(v).
-end_of_list.
+%formulas(goals).
+%object(u) & object(v) -> runit_mul(u@v) * assoc_mul(u,v,1) = u@runit_mul(v).
+%end_of_list.
 
